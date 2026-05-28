@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>シンプル天気アプリ</title>
+</head>
+<body>
+    <h1>現在の天気</h1>
+    <div id="weather">位置情報を取得中...</div>
+
+    <script>
+        // ブラウザから現在地（緯度・経度）を取得
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const { latitude, longitude } = position.coords;
+            
+            // Open-Meteo APIのURL
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,precipitation,weather_code&timezone=Asia/Tokyo`;
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            const temp = data.current.temperature_2m;
+            const precip = data.current.precipitation;
+            
+            document.getElementById('weather').innerHTML = `
+                <p>気温: ${temp}°C</p>
+                <p>現在の降水量: ${precip}mm</p>
+            `;
+        });
+    </script>
+</body>
+</html>
